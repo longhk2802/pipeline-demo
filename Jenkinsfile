@@ -11,7 +11,7 @@ pipeline {
     stage('Buzz Test') {
       steps {
         sh './jenkins/test-all.sh'
-        junit(testResults: 'target/**/TEST*.xml', skipPublishingChecks: true)
+        junit(testResults: '**/surefire-reports/**/*.xml', skipPublishingChecks: true)
       }
     }
 
