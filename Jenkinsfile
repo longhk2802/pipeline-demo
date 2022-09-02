@@ -10,9 +10,21 @@ echo "I am a ${BUZZ_NAME}"'''
     }
 
     stage('Buzz Test') {
-      steps {
-        sh './jenkins/test-all.sh'
-        junit(testResults: '**/surefire-reports/**/*.xml', skipPublishingChecks: true)
+      parallel {
+        stage('Buzz Test') {
+          steps {
+            sh './jenkins/test-all.sh'
+            junit(testResults: '**/surefire-reports/**/*.xml', skipPublishingChecks: true)
+          }
+        }
+
+        stage('Buzz Test 2') {
+          steps {
+            sh '''sleep 10
+echo done.'''
+          }
+        }
+
       }
     }
 
