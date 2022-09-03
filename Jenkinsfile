@@ -106,6 +106,19 @@ echo done.'''
       }
     }
 
+    stage('Deploy to Staging') {
+      agent {
+        node {
+          label 'java8'
+        }
+
+      }
+      steps {
+        unstash 'Buzz Java 8'
+        sh './jenkins/deploy.sh staging'
+      }
+    }
+
   }
   environment {
     BUZZ_NAME = 'Worker Bee'
