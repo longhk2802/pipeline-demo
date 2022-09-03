@@ -1,7 +1,13 @@
 pipeline {
-  agent any
+  agent none
   stages {
     stage('Buzz Build') {
+      agent {
+        node {
+          label 'java7'
+        }
+
+      }
       steps {
         sh '''./jenkins/build.sh
 echo "I am a ${BUZZ_NAME} ee"'''
@@ -12,6 +18,12 @@ echo "I am a ${BUZZ_NAME} ee"'''
     stage('Buzz Test') {
       parallel {
         stage('Buzz Test') {
+          agent {
+            node {
+              label 'java7'
+            }
+
+          }
           steps {
             sh './jenkins/test-all.sh'
             junit(testResults: '**/surefire-reports/**/*.xml', skipPublishingChecks: true)
@@ -19,6 +31,12 @@ echo "I am a ${BUZZ_NAME} ee"'''
         }
 
         stage('Buzz Test 2') {
+          agent {
+            node {
+              label 'java7'
+            }
+
+          }
           steps {
             sh '''sleep 10
 echo done.'''
