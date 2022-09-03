@@ -2,16 +2,38 @@ pipeline {
   agent none
   stages {
     stage('Buzz Build') {
-      agent {
-        node {
-          label 'java7'
+      parallel {
+        stage('build java 7') {
+          agent {
+            node {
+              label 'java7'
+            }
+
+          }
+          steps {
+            sh '''./jenkins/build.sh
+echo "I am a ${BUZZ_NAME} ee"'''
+            archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
+          }
         }
 
-      }
-      steps {
-        sh '''./jenkins/build.sh
+        stage('buid java 8 ') {
+          agent {
+            node {
+              label 'java8'
+            }
+
+          }
+          environment {
+            BUZZ_NAME = 'Java 8 Bee'
+          }
+          steps {
+            sh '''./jenkins/build.sh
 echo "I am a ${BUZZ_NAME} ee"'''
-        archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
+            archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
+          }
+        }
+
       }
     }
 
