@@ -14,6 +14,7 @@ pipeline {
             sh '''./jenkins/build.sh
 echo "I am a ${BUZZ_NAME} ee"'''
             archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
+            stash(name: 'Buzz Java 7', includes: 'target/**')
           }
         }
 
@@ -31,6 +32,7 @@ echo "I am a ${BUZZ_NAME} ee"'''
             sh '''./jenkins/build.sh
 echo "I am a ${BUZZ_NAME} ee"'''
             archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
+            stash(name: 'Buzz Java 8', includes: 'target/**')
           }
         }
 
@@ -39,7 +41,7 @@ echo "I am a ${BUZZ_NAME} ee"'''
 
     stage('Buzz Test') {
       parallel {
-        stage('Buzz Test') {
+        stage('Test A7') {
           agent {
             node {
               label 'java7'
@@ -47,12 +49,13 @@ echo "I am a ${BUZZ_NAME} ee"'''
 
           }
           steps {
+            unstash 'Buzz Java 7'
             sh './jenkins/test-all.sh'
             junit(testResults: '**/surefire-reports/**/*.xml', skipPublishingChecks: true)
           }
         }
 
-        stage('Buzz Test 2') {
+        stage('Test B7') {
           agent {
             node {
               label 'java7'
@@ -60,6 +63,35 @@ echo "I am a ${BUZZ_NAME} ee"'''
 
           }
           steps {
+            unstash 'Buzz Java 8'
+            sh '''sleep 10
+echo done.'''
+          }
+        }
+
+        stage('Test A8') {
+          agent {
+            node {
+              label 'java8'
+            }
+
+          }
+          steps {
+            unstash 'Buzz Java 8'
+            sh './jenkins/test-all.sh'
+            junit(testResults: '**/surefire-reports/**/*.xml', skipPublishingChecks: true)
+          }
+        }
+
+        stage('Test B8') {
+          agent {
+            node {
+              label 'java8'
+            }
+
+          }
+          steps {
+            unstash 'Buzz Java 8'
             sh '''sleep 10
 echo done.'''
           }
