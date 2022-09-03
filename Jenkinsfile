@@ -100,6 +100,12 @@ echo done.'''
       }
     }
 
+    stage('Confirm Deploy to Staging') {
+      steps {
+        input(message: 'Deploy to staging?', ok: 'yes')
+      }
+    }
+
   }
   environment {
     BUZZ_NAME = 'Worker Bee'
