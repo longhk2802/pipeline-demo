@@ -101,6 +101,9 @@ echo done.'''
     }
 
     stage('Confirm Deploy to Staging') {
+      when {
+        branch 'master'
+      }
       steps {
         input(message: 'Deploy to staging?', ok: 'yes')
       }
@@ -112,6 +115,9 @@ echo done.'''
           label 'java8'
         }
 
+      }
+      when {
+        branch 'master'
       }
       steps {
         unstash 'Buzz Java 8'
